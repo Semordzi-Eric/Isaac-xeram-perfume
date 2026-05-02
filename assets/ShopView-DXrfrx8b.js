@@ -1,0 +1,1 @@
+import{_ as c,c as a,e as n,w as s,D as r,at as _,r as i,o as e}from"./index-C1rPA2gS.js";const l={},p={class:"container mx-auto px-4 py-8"};function m(d,u){const o=i("RouterView");return e(),a("section",p,[n(o,null,{default:s(({Component:t})=>[(e(),r(_(t)))]),_:1})])}const x=c(l,[["render",m],["__scopeId","data-v-c518c3a3"]]);export{x as default};

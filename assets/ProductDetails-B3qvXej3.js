@@ -1,0 +1,1 @@
+import o from"./MainDetails-BWsOpIMq.js";import{_ as t,c as n,e as c,o as r}from"./index-C1rPA2gS.js";import"./formatCurrency-DKy2DIYV.js";const _={};function s(a,i){const e=o;return r(),n("div",null,[c(e)])}const f=t(_,[["render",s]]);export{f as default};

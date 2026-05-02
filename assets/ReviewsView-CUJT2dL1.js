@@ -1,0 +1,1 @@
+import{_ as s,c as n,a as o,o as r}from"./index-C1rPA2gS.js";const t={};function a(c,e){return r(),n("div",null,e[0]||(e[0]=[o("h1",null,"ReviewsView",-1)]))}const l=s(t,[["render",a]]);export{l as default};
