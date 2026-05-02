@@ -32,3 +32,8 @@ coverage
 # Auto-generated type declarations
 auto-imports.d.ts
 components.d.ts
+
+# Environment variables
+.env
+.env.*
+!.env.example

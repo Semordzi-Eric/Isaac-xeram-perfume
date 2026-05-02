@@ -1,68 +1,144 @@
 <template>
-  <section class="whe-sec mx-auto max-w-6xl space-y-4 px-4 py-16 dark:text-white">
-    <h2 class="title text-center text-4xl font-light">Why Choose Xeram?</h2>
+  <section class="why-section w-full overflow-hidden">
 
-    <div class="mt-10 grid grid-cols-1 gap-8 md:grid-cols-2 lg:gap-16">
-      <div v-for="(item, index) in sections" :key="index" class="flex flex-col">
-        <div class="mb-6 h-64 overflow-hidden md:h-80">
-          <img
-            decoding="async"
-            loading="lazy"
-            :sizes="item.imageSizes"
-            :srcset="item.imageSrcset"
-            :src="item.imageSrc"
-            :alt="item.imageAlt"
-            class="h-full w-full rounded-2xl object-cover shadow-lg"
-          />
+    <!-- Section Header -->
+    <div class="reveal-on-scroll text-center py-20 px-6 bg-ivory dark:bg-obsidian">
+      <p class="text-[10px] tracking-[0.5em] uppercase text-gold font-light mb-4">Our Promise</p>
+      <h2 class="font-display text-4xl md:text-6xl font-light tracking-wide text-obsidian dark:text-ivory mb-6">
+        Why Choose Xeram
+      </h2>
+      <div class="gold-divider mx-auto" />
+    </div>
+
+    <!-- Editorial Alternating Blocks -->
+    <div
+      v-for="(item, index) in sections"
+      :key="index"
+      class="reveal-on-scroll editorial-block grid grid-cols-1 md:grid-cols-2 min-h-[70vh]"
+      :class="index % 2 === 1 ? 'md:[&>*:first-child]:order-2' : ''"
+    >
+      <!-- Image Side -->
+      <div class="editorial-image relative overflow-hidden">
+        <img
+          decoding="async"
+          loading="lazy"
+          :srcset="item.imageSrcset"
+          :src="item.imageSrc"
+          :alt="item.imageAlt"
+          class="absolute inset-0 w-full h-full object-cover transition-transform duration-[2s] hover:scale-105"
+        />
+        <!-- Gold overlay shimmer -->
+        <div class="absolute inset-0 bg-gradient-to-t from-obsidian/40 via-transparent to-transparent" />
+        <!-- Decorative numeral -->
+        <div class="absolute top-8 right-8 md:top-12 md:right-12">
+          <span class="editorial-numeral font-display text-ivory/20 select-none">{{ String(index + 1).padStart(2, '0') }}</span>
         </div>
-        <h3 class="p-2 text-2xl font-medium">{{ item.title }}</h3>
-        <p class="p-3 text-left text-lg font-light">
+      </div>
+
+      <!-- Text Side -->
+      <div
+        class="editorial-text flex flex-col justify-center px-10 py-16 md:px-16 md:py-24"
+        :class="index % 2 === 0 ? 'bg-ivory dark:bg-obsidian' : 'bg-cream dark:bg-charcoal'"
+      >
+        <p class="text-[9px] tracking-[0.5em] uppercase text-gold font-light mb-6">0{{ index + 1 }} — Excellence</p>
+        <h3 class="font-display text-3xl md:text-4xl lg:text-5xl font-light text-obsidian dark:text-ivory mb-8 leading-tight">
+          {{ item.title }}
+        </h3>
+        <div class="gold-divider mb-8" style="margin-left: 0; margin-right: auto;" />
+        <p class="text-sm font-light text-ash dark:text-smoke leading-loose max-w-md">
           {{ item.description }}
         </p>
+        <div class="mt-10">
+          <RouterLink to="/shop/all-products" class="editorial-cta group inline-flex items-center gap-3 text-[10px] tracking-[0.3em] uppercase text-obsidian dark:text-ivory font-light">
+            <span class="group-hover:text-gold transition-colors duration-300">Discover More</span>
+            <span class="editorial-arrow text-gold transition-transform duration-300 group-hover:translate-x-2">→</span>
+          </RouterLink>
+        </div>
       </div>
     </div>
+
   </section>
 </template>
 
 <script setup lang="ts">
+import { onMounted } from 'vue'
+
 const sections = [
   {
-    title: 'Quality Ingredients',
+    title: 'The Art of Fine Ingredients',
     description:
-      'We use only the highest quality ingredients to create long-lasting, memorable fragrances.',
+      'We source only the most exceptional ingredients from around the world — rare florals, aged ouds, and precious resins. Each note is chosen with an obsessive attention to quality, creating fragrances that last and linger.',
     imageSrc: 'https://framerusercontent.com/images/hZO0MufL7NSCybZu8aAGxj2v0s.jpg',
-    imageAlt: 'Premium tea leaves - quality ingredients',
-    imageSizes: '323px',
+    imageAlt: 'Premium ingredients for luxury perfume',
     imageSrcset: `
       https://framerusercontent.com/images/hZO0MufL7NSCybZu8aAGxj2v0s.jpg?scale-down-to=512   512w,
       https://framerusercontent.com/images/hZO0MufL7NSCybZu8aAGxj2v0s.jpg?scale-down-to=1024 1024w,
-      https://framerusercontent.com/images/hZO0MufL7NSCybZu8aAGxj2v0s.jpg?scale-down-to=2048 2048w,
       https://framerusercontent.com/images/hZO0MufL7NSCybZu8aAGxj2v0s.jpg                    3728w
     `,
   },
   {
-    title: 'Elegant Packaging',
+    title: 'Elegance in Every Bottle',
     description:
-      'Our perfumes come in beautifully designed bottles that reflect the luxury and sophistication of our brand.',
+      'Our bottles are designed as objects of desire — each one a sculptural testament to luxury. Gold-accented glass vessels that sit on your vanity as a statement of refined taste.',
     imageSrc: 'https://framerusercontent.com/images/jvqNza44F7fQUg6Edvsm3jYfH5w.jpg',
-    imageAlt: 'Perfume bottle with elegant packaging',
-    imageSizes: '323px',
+    imageAlt: 'Luxury perfume bottle with elegant packaging',
     imageSrcset: `
       https://framerusercontent.com/images/jvqNza44F7fQUg6Edvsm3jYfH5w.jpg?scale-down-to=1024  768w,
       https://framerusercontent.com/images/jvqNza44F7fQUg6Edvsm3jYfH5w.jpg                    1125w
     `,
   },
 ]
+
+onMounted(() => {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) entry.target.classList.add('revealed')
+      })
+    },
+    { threshold: 0.1 },
+  )
+  document.querySelectorAll('.reveal-on-scroll').forEach((el) => observer.observe(el))
+})
 </script>
 
 <style scoped>
-.title {
-  text-align: center;
-  margin-bottom: 3rem;
-  margin-top: 2rem;
+.why-section {
+  background-color: #f5f0eb;
+}
+.dark .why-section {
+  background-color: #0a0a0a;
 }
 
-.whe-sec {
-  font-weight: lighter;
+.editorial-image {
+  min-height: 60vw;
+}
+@media (min-width: 768px) {
+  .editorial-image {
+    min-height: unset;
+  }
+}
+
+.editorial-numeral {
+  font-size: clamp(5rem, 15vw, 12rem);
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.bg-ivory { background-color: #f5f0eb; }
+.bg-cream { background-color: #f0ebe4; }
+.bg-obsidian { background-color: #0a0a0a; }
+.bg-charcoal { background-color: #1a1a1a; }
+.text-obsidian { color: #0a0a0a; }
+.text-ivory { color: #f5f0eb; }
+.text-gold { color: #c9a84c; }
+.text-ash { color: #888888; }
+.text-smoke { color: #bbbbbb; }
+
+.gold-divider {
+  width: 48px;
+  height: 1px;
+  background: linear-gradient(90deg, #c9a84c, transparent);
 }
 </style>

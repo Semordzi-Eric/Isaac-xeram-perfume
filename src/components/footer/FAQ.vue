@@ -1,77 +1,123 @@
 <script setup lang="ts">
-import type { AccordionItem } from '@nuxt/ui'
 import { ref } from 'vue'
 
-// const items = ref<AccordionItem[]>([
-//   {
-//     label: 'Icons',
-//     icon: 'i-lucide-smile',
-//     content: 'You have nothing to do, @nuxt/icon will handle it automatically.',
-//   },
-//   {
-//     label: 'Colors',
-//     icon: 'i-lucide-swatch-book',
-//     content: 'Choose a primary and a neutral color from your Tailwind CSS theme.',
-//   },
-//   {
-//     label: 'Components',
-//     icon: 'i-lucide-box',
-//     content:
-//       'You can customize components by using the `class` / `ui` props or in your app.config.ts.',
-//   },
-// ])
-
-const faqs = ref<AccordionItem[]>([
+const faqs = ref([
   {
-    label: 'What are your business hours?',
+    label: 'What makes Xeram fragrances unique?',
     content:
-      'Our regular business hours are Monday to Friday from 8:00 AM to 5:00 PM, and Saturday from 9:00 AM to 1:00 PM. We are closed on Sundays and public holidays.',
+      'Xeram sources only the finest raw materials — aged ouds from Assam, Grasse rose absolutes, and rare Madagascan vanilla. Every fragrance is blended by hand in small batches to ensure unparalleled quality and longevity.',
   },
   {
-    label: 'How can I schedule a consultation?',
+    label: 'How long do Xeram perfumes last on skin?',
     content:
-      'You can schedule a consultation by filling out the contact form on this page, calling our office directly, or sending us an email. Our team will get back to you within 24 hours to confirm your appointment.',
+      'Our Originals are crafted with a concentration of 20-30% pure fragrance oil, delivering exceptional longevity of 8-12 hours. Xeram Impressions perform at 15-20% concentration for a 6-8 hour projection.',
   },
   {
-    label: 'Do you offer virtual meetings?',
+    label: 'Which bottle size should I choose?',
     content:
-      'Yes, we offer virtual meetings via Zoom, Google Meet, or Microsoft Teams. Please indicate your preference for a virtual meeting when contacting us, and we will provide you with the necessary details.',
+      'If you\'re exploring a new scent, we recommend starting with our 50ml. For a signature fragrance you wear daily, the 100ml or 150ml offers the best value. Our 200ml is the collector\'s choice.',
   },
   {
-    label: 'What is your response time for inquiries?',
+    label: 'How do I order via WhatsApp?',
     content:
-      'We aim to respond to all inquiries within 24 business hours. For urgent matters, we recommend calling our office directly for immediate assistance.',
+      'Simply add your desired items to cart and proceed to checkout — you\'ll be redirected to WhatsApp with your full order details pre-filled. Our team will confirm and process your order within the hour.',
+  },
+  {
+    label: 'Do you offer nationwide delivery?',
+    content:
+      'Yes. We partner with FedEx for all deliveries, covering every region of the country. Standard delivery takes 3-5 business days. All orders are fully tracked from the moment they leave our hands.',
+  },
+  {
+    label: 'What is your return and exchange policy?',
+    content:
+      'We stand behind every bottle we sell. If you\'re unsatisfied for any reason, contact us within 7 days of delivery and we\'ll arrange an exchange or store credit. Your satisfaction is our measure of success.',
   },
 ])
+
+const openIndex = ref<number | null>(null)
+
+const toggle = (i: number) => {
+  openIndex.value = openIndex.value === i ? null : i
+}
 </script>
 
 <template>
-  <div class="w-[95%] md:w-[100%]">
-    <h2 class="mb-8 text-center text-2xl font-bold md:text-3xl">Frequently Asked Questions</h2>
-    <UAccordion
-      :items="faqs"
-      :ui="{
-        label: 'text-lg font-bold',
-        content: 'text-lg font-medium',
-        item: ' border-(--ui-border-accented)',
-      }"
-      class="mx-auto max-w-3xl rounded-4xl border-2 p-6"
-    />
-  </div>
+  <section class="faq-section w-full py-24 px-6 bg-ivory dark:bg-obsidian">
 
-  <!-- <div class="flex flex-col gap-4">
-    <h3 class="text-center text-2xl font-light text-(--ui-text-highlighted) md:text-4xl">
-      Frequently Asked Questions
-    </h3>
-  </div>
+    <!-- Header -->
+    <div class="reveal-on-scroll text-center mb-16">
+      <p class="text-[10px] tracking-[0.5em] uppercase text-gold font-light mb-4">Questions & Answers</p>
+      <h2 class="font-display text-4xl md:text-5xl font-light text-obsidian dark:text-ivory mb-6 tracking-wide">
+        Frequently Asked
+      </h2>
+      <div class="gold-divider mx-auto" />
+    </div>
 
-  <UAccordion
-    :items="items"
-    class="w-[95%] rounded-4xl bg-(--ui-bg-elevated) p-6 md:w-[80%]"
-    :ui="{
-      label: 'text-lg font-bold',
-      content: 'text-base',
-      item: ' border-(--ui-border-accented)',
-    }"
-  /> -->
+    <!-- FAQ Accordion -->
+    <div class="reveal-on-scroll max-w-3xl mx-auto">
+      <div
+        v-for="(faq, i) in faqs"
+        :key="i"
+        class="faq-item border-b border-gold/15 last:border-b-0"
+      >
+        <!-- Question row -->
+        <button
+          class="faq-question group w-full flex items-center justify-between py-7 text-left"
+          @click="toggle(i)"
+        >
+          <span
+            class="font-display text-xl font-light text-obsidian dark:text-ivory group-hover:text-gold transition-colors duration-300 pr-8"
+            :class="openIndex === i ? 'text-gold' : ''"
+          >
+            {{ faq.label }}
+          </span>
+          <span
+            class="faq-icon flex-shrink-0 w-8 h-8 border border-gold/30 flex items-center justify-center text-gold transition-all duration-300"
+            :class="openIndex === i ? 'rotate-45 bg-gold/10' : ''"
+          >
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <line x1="6" y1="0" x2="6" y2="12" stroke="currentColor" stroke-width="1" />
+              <line x1="0" y1="6" x2="12" y2="6" stroke="currentColor" stroke-width="1" />
+            </svg>
+          </span>
+        </button>
+
+        <!-- Answer panel -->
+        <div
+          class="faq-answer overflow-hidden transition-all duration-500 ease-in-out"
+          :style="{ maxHeight: openIndex === i ? '300px' : '0' }"
+        >
+          <p class="pb-8 pr-14 text-sm font-light text-ash dark:text-smoke leading-loose">
+            {{ faq.content }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </section>
 </template>
+
+<style scoped>
+.faq-section { }
+
+.faq-icon {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s ease;
+}
+
+.text-gold { color: #c9a84c; }
+.text-obsidian { color: #0a0a0a; }
+.text-ivory { color: #f5f0eb; }
+.text-ash { color: #888888; }
+.text-smoke { color: #bbbbbb; }
+.bg-ivory { background-color: #f5f0eb; }
+.bg-obsidian { background-color: #0a0a0a; }
+.border-gold { border-color: rgba(201,168,76,0.15); }
+
+.gold-divider {
+  width: 48px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #c9a84c, transparent);
+}
+
+.faq-question { background: none; border: none; cursor: pointer; }
+</style>

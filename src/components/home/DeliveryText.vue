@@ -1,87 +1,142 @@
 <template>
-  <div class="flex w-full justify-center py-16">
-    <div class="w-full max-w-6xl px-4">
-      <!-- Section Header -->
-      <div class="mb-12 text-center">
-        <h3 class="p-2 text-3xl font-light">{{ title }}</h3>
-        <h2 class="mt-3 mb-4 p-2 text-4xl font-light text-gray-900">
-          {{ subtitle }}
-        </h2>
-        <div class="flex justify-center">
-          <p class="p-4 text-xl">
-            At Xeram Perfumes, we ensure your favorite scents reach you swiftly.
-            <span class="font-bold text-(--ui-text-highlighted)">Our FedEx delivery service</span>
-            covers all parts of the country, providing you with timely and dependable shipping.
-          </p>
-        </div>
-      </div>
+  <section class="delivery-section w-full overflow-hidden">
 
-      <!-- Delivery Features -->
-      <div class="mt-16 grid grid-cols-1 gap-8 md:grid-cols-3">
-        <div
-          v-for="feature in deliveryFeatures"
-          :key="feature.title"
-          class="flex flex-col items-center space-y-6"
-        >
-          <div class="mx-auto w-full max-w-md">
-            <img
-              :src="feature.image"
-              :srcset="feature.srcSet"
-              :alt="feature.imageAlt"
-              class="h-64 w-full rounded-2xl object-cover shadow-lg"
-            />
-          </div>
-          <div class="text-center">
-            <h3 class="mt-4 mb-4 text-center text-2xl text-(--ui-text-highlighted)">
-              {{ feature.title }}
-            </h3>
-            <p class="description text-base">
-              {{ feature.description }}
-            </p>
-          </div>
+    <!-- Dark cinematic header band -->
+    <div class="bg-obsidian py-24 px-6 text-center reveal-on-scroll">
+      <div class="gold-divider-full mb-16" />
+      <p class="text-[10px] tracking-[0.5em] uppercase text-gold font-light mb-4">Our Promise</p>
+      <h2 class="font-display text-4xl md:text-6xl font-light text-ivory mb-6 tracking-wide">
+        Swift. Secure. Delivered.
+      </h2>
+      <div class="gold-divider mx-auto mb-8" />
+      <p class="text-sm font-light text-ash max-w-2xl mx-auto leading-loose">
+        At Xeram Perfumes, your order is treated with the same care as the fragrance itself.
+        Our <span class="text-gold-light">FedEx tracked delivery service</span> reaches every corner of the country
+        with precision and elegance.
+      </p>
+      <div class="gold-divider-full mt-16" />
+    </div>
+
+    <!-- Stat Metrics -->
+    <div class="bg-charcoal py-16 px-6 reveal-on-scroll">
+      <div class="max-w-4xl mx-auto grid grid-cols-3 gap-0 divide-x divide-gold/15">
+        <div v-for="stat in stats" :key="stat.label" class="text-center px-6 py-4">
+          <p class="font-display text-4xl md:text-5xl font-light text-gold mb-2">{{ stat.value }}</p>
+          <p class="text-[9px] tracking-[0.3em] uppercase text-ash font-light">{{ stat.label }}</p>
         </div>
       </div>
     </div>
-  </div>
+
+    <!-- Feature Cards -->
+    <div class="bg-obsidian pb-24 px-6 reveal-on-scroll">
+      <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-px bg-gold/10">
+        <div
+          v-for="feature in deliveryFeatures"
+          :key="feature.title"
+          class="delivery-card group bg-obsidian hover:bg-charcoal transition-colors duration-500 p-10 text-center"
+        >
+          <!-- Icon -->
+          <div class="delivery-icon-wrap mx-auto mb-8">
+            <span class="text-3xl">{{ feature.icon }}</span>
+          </div>
+
+          <!-- Image -->
+          <div class="relative overflow-hidden mb-8" style="aspect-ratio: 16/9;">
+            <img
+              :src="feature.image"
+              :alt="feature.imageAlt"
+              class="w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-105"
+              :srcset="feature.srcSet"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-obsidian/60 to-transparent" />
+          </div>
+
+          <h3 class="font-display text-xl font-light text-ivory mb-4 leading-snug">{{ feature.title }}</h3>
+          <div class="gold-divider mx-auto mb-5" />
+          <p class="text-xs text-ash font-light leading-loose">{{ feature.description }}</p>
+        </div>
+      </div>
+    </div>
+
+  </section>
 </template>
 
 <script setup lang="ts">
-import type { Delivery } from '@/types/types'
-import { ref } from 'vue'
+import { onMounted } from 'vue'
 
-const title = ref('Delivery')
-const subtitle = ref('Fast and Reliable Delivery Across the Nation')
+const stats = [
+  { value: '3-5', label: 'Days Delivery' },
+  { value: '100%', label: 'Tracked Orders' },
+  { value: '24/7', label: 'Customer Care' },
+]
 
-const deliveryFeatures = ref<Delivery[]>([
+const deliveryFeatures = [
   {
-    title: 'Shipping Made Simple and Efficient',
-    description: 'Enjoy hassle-free delivery with tracking options.',
+    title: 'Effortless Shipping',
+    description: 'Enjoy hassle-free delivery with real-time FedEx tracking at every step of your journey.',
     image: 'https://framerusercontent.com/images/n2NUaK4xoFVwf2wKvpZ8UyNMyQ.png',
-    srcSet:
-      'https://framerusercontent.com/images/n2NUaK4xoFVwf2wKvpZ8UyNMyQ.png?scale-down-to=512 512w,https://framerusercontent.com/images/n2NUaK4xoFVwf2wKvpZ8UyNMyQ.png?scale-down-to=1024 1024w,https://framerusercontent.com/images/n2NUaK4xoFVwf2wKvpZ8UyNMyQ.png 1481w',
-    imageAlt: 'Shipping boxes and delivery truck',
+    srcSet: 'https://framerusercontent.com/images/n2NUaK4xoFVwf2wKvpZ8UyNMyQ.png?scale-down-to=512 512w,https://framerusercontent.com/images/n2NUaK4xoFVwf2wKvpZ8UyNMyQ.png 1481w',
+    imageAlt: 'Efficient shipping service',
+    icon: '📦',
   },
   {
-    title: 'Delivery Timeframes You Can Count On',
-    description: 'Most orders arrive within 3-5 business days.',
+    title: 'Guaranteed Timeframes',
+    description: 'Most orders arrive within 3-5 business days. We don\'t keep you waiting.',
     image: 'https://framerusercontent.com/images/Yaro8KnhM5gPT9T5LlKAyQZ8Q4.png',
-    srcSet:
-      'https://framerusercontent.com/images/Yaro8KnhM5gPT9T5LlKAyQZ8Q4.png?scale-down-to=512 512w,https://framerusercontent.com/images/Yaro8KnhM5gPT9T5LlKAyQZ8Q4.png?scale-down-to=1024 1024w,https://framerusercontent.com/images/Yaro8KnhM5gPT9T5LlKAyQZ8Q4.png 1481w',
-    imageAlt: 'Delivery route with time markers',
+    srcSet: 'https://framerusercontent.com/images/Yaro8KnhM5gPT9T5LlKAyQZ8Q4.png?scale-down-to=512 512w,https://framerusercontent.com/images/Yaro8KnhM5gPT9T5LlKAyQZ8Q4.png 1481w',
+    imageAlt: 'On-time delivery guarantee',
+    icon: '⏱',
   },
   {
-    title: 'Your Satisfaction is Our Priority',
-    description: 'We strive to make your shopping experience seamless.',
+    title: 'Your Satisfaction First',
+    description: 'Every order is handled with care. If anything falls short, we make it right. Always.',
     image: 'https://framerusercontent.com/images/FcyyO7JK3b8rHcswo9ukJ2yK4E.png',
-    srcSet:
-      'https://framerusercontent.com/images/FcyyO7JK3b8rHcswo9ukJ2yK4E.png?scale-down-to=512 512w,https://framerusercontent.com/images/FcyyO7JK3b8rHcswo9ukJ2yK4E.png?scale-down-to=1024 1024w,https://framerusercontent.com/images/FcyyO7JK3b8rHcswo9ukJ2yK4E.png 1481w',
-    imageAlt: 'Packages delivered to door',
+    srcSet: 'https://framerusercontent.com/images/FcyyO7JK3b8rHcswo9ukJ2yK4E.png?scale-down-to=512 512w,https://framerusercontent.com/images/FcyyO7JK3b8rHcswo9ukJ2yK4E.png 1481w',
+    imageAlt: 'Customer satisfaction promise',
+    icon: '✦',
   },
-])
+]
+
+onMounted(() => {
+  const observer = new IntersectionObserver(
+    (entries) => entries.forEach((entry) => entry.isIntersecting && entry.target.classList.add('revealed')),
+    { threshold: 0.1 },
+  )
+  document.querySelectorAll('.reveal-on-scroll').forEach((el) => observer.observe(el))
+})
 </script>
 
 <style scoped>
-.description {
-  margin-top: 1rem;
+.delivery-section { background-color: #0a0a0a; }
+
+.delivery-icon-wrap {
+  width: 56px;
+  height: 56px;
+  border: 1px solid rgba(201,168,76,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delivery-card {
+  border: none;
+}
+
+.text-gold { color: #c9a84c; }
+.text-gold-light { color: #e8d5a3; }
+.text-ivory { color: #f5f0eb; }
+.text-ash { color: #888888; }
+.bg-obsidian { background-color: #0a0a0a; }
+.bg-charcoal { background-color: #1a1a1a; }
+
+.gold-divider {
+  width: 36px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #c9a84c, transparent);
+}
+.gold-divider-full {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,168,76,0.3), transparent);
 }
 </style>

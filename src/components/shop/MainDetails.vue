@@ -18,207 +18,266 @@ if (!product.value) {
   router.push({ name: 'not-found' })
 }
 const selectedVariant = ref(product.value.variant[0])
-
 const reorderedVariants = ref([...(product.value.variant || [])])
 
 const displayVariants = computed(() => {
   return reorderedVariants.value.filter((variant) => variant.id !== selectedVariant.value.id)
 })
 
-// Compute whether the current variant is already in cart and its quantity
 const variantInCart = computed(() => {
   if (!product.value || !selectedVariant.value) return { inCart: false, quantity: 0 }
-
   const cartItem = cartItems.find((item) => item.id === selectedVariant.value.id)
-  return {
-    inCart: !!cartItem,
-    quantity: cartItem ? cartItem.quantity : 0,
-  }
+  return { inCart: !!cartItem, quantity: cartItem ? cartItem.quantity : 0 }
 })
 
-// Function to update the selected variant and swap positions
 const selectVariant = (variant: Product['variant'][0]) => {
   const previousSelected = selectedVariant.value
-
-  // Find the index of the clicked variant
   const clickedIndex = reorderedVariants.value.findIndex((v) => v.id === variant.id)
-
-  // Create a new array with the swap
   const newVariants = [...reorderedVariants.value]
-  newVariants[clickedIndex] = previousSelected // Put previously selected variant in clicked position
-
-  // Find where the previously selected variant was and put the newly selected there
-  const previousSelectedIndex = reorderedVariants.value.findIndex(
-    (v) => v.id === previousSelected.id,
-  )
-  if (previousSelectedIndex !== -1) {
-    newVariants[previousSelectedIndex] = variant
-  }
-
-  // Update the reordered variants
+  newVariants[clickedIndex] = previousSelected
+  const previousSelectedIndex = reorderedVariants.value.findIndex((v) => v.id === previousSelected.id)
+  if (previousSelectedIndex !== -1) newVariants[previousSelectedIndex] = variant
   reorderedVariants.value = newVariants
-
-  // Update the selected variant
   selectedVariant.value = variant
-
-  router.push({
-    name: 'productDetails',
-    params: { id: product.value.id, variantId: variant.id },
-  })
+  router.push({ name: 'productDetails', params: { id: product.value.id, variantId: variant.id } })
 }
 
+const feedbackVisible = ref(false)
 const addItemToCart = () => {
-  if (!product.value || !selectedVariant.value) {
-    console.error('No product or variant selected')
-    return
-  }
-
+  if (!product.value || !selectedVariant.value) return
   try {
     addToCart(product.value.id, selectedVariant.value.id)
-    // Show feedback to user
-    showAddedToCartFeedback()
+    feedbackVisible.value = true
+    setTimeout(() => { feedbackVisible.value = false }, 2500)
   } catch (error) {
     console.error('Failed to add item to cart:', error)
-    alert('Failed to add item to cart. Please try again.')
   }
 }
 
-// Visual feedback when item is added to cart
-const feedbackVisible = ref(false)
-const showAddedToCartFeedback = () => {
-  feedbackVisible.value = true
-  setTimeout(() => {
-    feedbackVisible.value = false
-  }, 2000)
-}
-
-// Check if variant ID is in URL params and select that variant
 onMounted(() => {
   const variantId = Number(route.params.variantId)
   if (variantId && product.value) {
     const variant = product.value.variant.find((v) => v.id === variantId)
-    if (variant) {
-      selectedVariant.value = variant
-    }
+    if (variant) selectedVariant.value = variant
   }
 })
 </script>
 
 <template>
-  <div class="container mx-auto -mt-10 min-h-screen w-[80%]">
-    <div class="container mx-auto py-3 md:px-4 md:py-8">
-      <!-- Product Display Section -->
-      <div class="flex flex-col gap-8 md:flex-row">
-        <!-- Product Image -->
-        <div class="w-full md:w-1/2">
-          <div class="p-4 md:p-8">
+  <div class="product-detail-page min-h-screen bg-ivory dark:bg-obsidian pt-8 pb-32">
+    <div class="max-w-7xl mx-auto px-6 md:px-12">
+
+      <!-- Breadcrumb -->
+      <div class="mb-12 flex items-center gap-3 text-[9px] tracking-[0.3em] uppercase text-ash font-light">
+        <RouterLink to="/" class="hover:text-gold transition-colors duration-300">Home</RouterLink>
+        <span class="text-gold/40">—</span>
+        <RouterLink to="/shop/all-products" class="hover:text-gold transition-colors duration-300">Shop</RouterLink>
+        <span class="text-gold/40">—</span>
+        <span class="text-obsidian dark:text-ivory">{{ product.name }}</span>
+      </div>
+
+      <!-- Main product layout -->
+      <div class="grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-20">
+
+        <!-- IMAGE COLUMN -->
+        <div>
+          <!-- Main image -->
+          <div class="relative aspect-[3/4] w-full overflow-hidden bg-cream dark:bg-charcoal group">
             <img
               :src="selectedVariant.image"
               :alt="product.name"
-              class="mx-auto w-full max-w-md rounded-2xl"
+              class="w-full h-full object-contain p-12 transition-transform duration-[1.5s] group-hover:scale-105"
             />
+            <!-- Gold border on hover -->
+            <div class="absolute inset-0 border border-gold/0 group-hover:border-gold/25 transition-all duration-700 pointer-events-none" />
           </div>
 
-          <!-- Thumbnail Images -->
-          <div class="mt-4 flex justify-center space-x-8 md:space-x-13">
+          <!-- Variant thumbnails -->
+          <div class="mt-4 flex gap-3">
             <div
               v-for="variant in displayVariants"
               :key="variant.id"
-              class="h-24 w-24 transform cursor-pointer overflow-hidden rounded-lg object-cover shadow-md transition-transform duration-300 ease-in-out hover:scale-100"
+              class="variant-thumb group relative aspect-square w-20 cursor-pointer overflow-hidden bg-cream dark:bg-charcoal border border-gold/10 hover:border-gold/40 transition-colors duration-300"
               @click="selectVariant(variant)"
             >
-              <img :src="variant.image" :alt="variant.size" class="h-full w-full" />
+              <img
+                :src="variant.image"
+                :alt="variant.size"
+                class="w-full h-full object-contain p-3 transition-transform duration-700 group-hover:scale-110"
+              />
+              <div class="absolute bottom-0 left-0 right-0 py-1 text-center">
+                <span class="text-[8px] tracking-widest text-ash uppercase">{{ variant.size }}</span>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Product Information -->
-        <div class="mt-10 flex w-full flex-col md:w-1/2">
-          <h1 class="mb-4 px-3 text-4xl font-light text-(--ui-text-highlighted)">
+        <!-- INFO COLUMN -->
+        <div class="flex flex-col justify-center">
+
+          <!-- Category -->
+          <p class="text-[9px] tracking-[0.5em] uppercase text-gold font-light mb-4">{{ product.category }}</p>
+
+          <!-- Product name -->
+          <h1 class="font-display text-4xl md:text-5xl lg:text-6xl font-light text-obsidian dark:text-ivory mb-6 leading-tight">
             {{ product.name }}
           </h1>
 
-          <div class="mb-6 rounded-lg p-3">
-            <p class="text-base leading-relaxed">
-              {{ product.description }}
-            </p>
-          </div>
+          <div class="gold-divider mb-8" style="margin-left: 0; margin-right: auto;" />
 
-          <!-- Price and Size -->
-          <div class="mb-4">
+          <!-- Description -->
+          <p class="text-sm font-light text-ash dark:text-smoke leading-loose mb-10 max-w-md">
+            {{ product.description }}
+          </p>
+
+          <!-- Price & Size row -->
+          <div class="border-t border-gold/15 border-b border-gold/15 py-6 mb-8">
             <div class="flex items-center justify-between">
-              <p class="text-sm font-medium">Price</p>
-              <p class="font-medium">Size</p>
-            </div>
-
-            <USeparator
-              class="my-2"
-              type="solid"
-              size="sm"
-              :ui="{
-                border: 'border-(--ui-border-inverted)',
-              }"
-            />
-
-            <div class="flex items-center justify-between">
-              <p class="text-base font-medium">{{ formatCurrency(selectedVariant.price) }}</p>
-              <p class="text-base font-medium">{{ selectedVariant.size }}</p>
+              <div>
+                <p class="text-[9px] tracking-[0.3em] uppercase text-ash font-light mb-2">Price</p>
+                <p class="font-display text-3xl font-light text-obsidian dark:text-ivory">
+                  {{ formatCurrency(selectedVariant.price) }}
+                </p>
+              </div>
+              <div class="text-right">
+                <p class="text-[9px] tracking-[0.3em] uppercase text-ash font-light mb-2">Size</p>
+                <p class="font-display text-3xl font-light text-obsidian dark:text-ivory">
+                  {{ selectedVariant.size }}
+                </p>
+              </div>
             </div>
           </div>
 
-          <!-- Cart status feedback -->
-          <!-- <div v-if="variantInCart.inCart" class="mb-3 text-center text-sm text-green-600">
-            This variant is already in your cart (Quantity: {{ variantInCart.quantity }})
-          </div> -->
+          <!-- Variant selector -->
+          <div class="mb-10">
+            <p class="text-[9px] tracking-[0.3em] uppercase text-ash font-light mb-4">Select Size</p>
+            <div class="flex flex-wrap gap-3">
+              <button
+                v-for="variant in reorderedVariants"
+                :key="variant.id"
+                @click="selectVariant(variant)"
+                class="size-selector text-[10px] tracking-[0.2em] uppercase font-light transition-all duration-300"
+                :class="variant.id === selectedVariant.id ? 'active' : ''"
+              >
+                {{ variant.size }}
+              </button>
+            </div>
+          </div>
 
-          <!-- Add to Cart Button -->
-          <div class="relative mt-3 flex w-full items-center justify-center">
-            <UButton
-              :label="variantInCart.inCart ? 'Add One More' : 'Add to Cart'"
-              leading-icon="i-lucide-shopping-cart"
-              size="xl"
-              color="neutral"
-              class="cursor-pointer items-center rounded-full border-2 border-(--ui-border-inverted) bg-(--ui-bg) px-8 py-3 font-semibold text-(--ui-text-highlighted) transition duration-300 ease-in-out hover:bg-(--ui-bg-inverted) hover:text-white dark:text-(--ui-text) dark:hover:bg-(--ui-bg-inverted) dark:hover:text-black"
+          <!-- Add to Cart -->
+          <div class="relative">
+            <button
+              class="add-to-cart-btn w-full py-5 text-[10px] tracking-[0.4em] uppercase font-light transition-all duration-500"
               @click="addItemToCart"
-            />
-
-            <!-- Feedback message -->
-            <!-- <div
-              v-show="feedbackVisible"
-              class="absolute -top-90 left-1/2 -translate-x-1/2 transform animate-bounce rounded-lg bg-green-600 px-4 py-2 text-sm text-white"
             >
-              Added to cart!
-            </div> -->
+              <span v-if="!feedbackVisible">
+                {{ variantInCart.inCart ? `Add One More (${variantInCart.quantity} in cart)` : 'Add to Cart' }}
+              </span>
+              <span v-else class="text-gold">✦ Added to Cart</span>
+            </button>
+
+            <!-- Feedback shimmer -->
+            <div
+              v-if="feedbackVisible"
+              class="cart-feedback-shimmer absolute inset-0 pointer-events-none"
+            />
           </div>
 
-          <!-- Ingredients and Details -->
-          <div class="mt-15 md:mt-25">
-            <div class="mb-4">
-              <div class="flex justify-between">
-                <p class="font-medium text-(--ui-text-highlighted)">Ingredients</p>
-                <p class="font-medium text-(--ui-text-highlighted)">Details</p>
+          <!-- Ingredients -->
+          <div class="mt-12 pt-8 border-t border-gold/15">
+            <p class="text-[9px] tracking-[0.3em] uppercase text-ash font-light mb-6">Fragrance Notes</p>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="ingredient-item">
+                <p class="text-[8px] tracking-[0.3em] uppercase text-gold/60 font-light mb-1">Top</p>
+                <p class="text-sm font-light text-obsidian dark:text-ivory">Pink Grapefruit</p>
               </div>
-            </div>
-
-            <div class="space-y-2">
-              <div class="flex justify-between">
-                <p class="text-base">Pink Grapefruit</p>
-                <p class="text-base">100% Organic</p>
+              <div class="ingredient-item">
+                <p class="text-[8px] tracking-[0.3em] uppercase text-gold/60 font-light mb-1">Heart</p>
+                <p class="text-sm font-light text-obsidian dark:text-ivory">Jasmine</p>
               </div>
-
-              <div class="flex justify-between">
-                <p class="text-base">Jasmine</p>
-                <p class="text-base">Female</p>
+              <div class="ingredient-item">
+                <p class="text-[8px] tracking-[0.3em] uppercase text-gold/60 font-light mb-1">Base</p>
+                <p class="text-sm font-light text-obsidian dark:text-ivory">Petite (France)</p>
               </div>
-
-              <div class="flex justify-between">
-                <p class="text-base">Petite (France)</p>
-                <p class="text-base"></p>
+              <div class="ingredient-item">
+                <p class="text-[8px] tracking-[0.3em] uppercase text-gold/60 font-light mb-1">Origin</p>
+                <p class="text-sm font-light text-obsidian dark:text-ivory">100% Organic</p>
               </div>
             </div>
           </div>
+
         </div>
       </div>
+
     </div>
   </div>
 </template>
+
+<style scoped>
+.product-detail-page { }
+
+.bg-ivory { background-color: #f5f0eb; }
+.bg-obsidian { background-color: #0a0a0a; }
+.bg-cream { background-color: #f0ebe4; }
+.bg-charcoal { background-color: #1a1a1a; }
+.text-gold { color: #c9a84c; }
+.text-obsidian { color: #0a0a0a; }
+.text-ivory { color: #f5f0eb; }
+.text-ash { color: #888888; }
+.text-smoke { color: #bbbbbb; }
+.border-gold { border-color: rgba(201,168,76,0.15); }
+
+.gold-divider {
+  width: 48px;
+  height: 1px;
+  background: linear-gradient(90deg, #c9a84c, transparent);
+}
+
+.size-selector {
+  padding: 0.6rem 1.2rem;
+  border: 1px solid rgba(201, 168, 76, 0.2);
+  color: #888888;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.size-selector:hover {
+  border-color: rgba(201, 168, 76, 0.5);
+  color: #0a0a0a;
+}
+.dark .size-selector:hover { color: #f5f0eb; }
+.size-selector.active {
+  border-color: #c9a84c;
+  background: rgba(201, 168, 76, 0.08);
+  color: #c9a84c;
+}
+
+.add-to-cart-btn {
+  background: #0a0a0a;
+  color: #f5f0eb;
+  border: 1px solid #0a0a0a;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.dark .add-to-cart-btn {
+  background: #f5f0eb;
+  color: #0a0a0a;
+  border-color: #f5f0eb;
+}
+.add-to-cart-btn:hover {
+  background: #c9a84c;
+  border-color: #c9a84c;
+  color: #0a0a0a;
+}
+
+.cart-feedback-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(201,168,76,0.15), transparent);
+  animation: shimmer-sweep 1s ease-in-out;
+}
+@keyframes shimmer-sweep {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+</style>
